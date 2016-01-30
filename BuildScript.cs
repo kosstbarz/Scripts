@@ -17,12 +17,10 @@ public class BuildScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        if (Instance == null)
-        {
+        if (Instance == null) {
             Instance = this;
         }
-        else
-        {
+        else {
             Debug.LogError("Only one instance of BuildScript can be created");
         }
         buildPanelActive = buildPanel.activeSelf;
@@ -65,6 +63,7 @@ public class BuildScript : MonoBehaviour {
 
     public void BuildRoad(Vector2 coord)
     {
-        MapController.Instance.ChangeTile(coord, "Road");
+        BuildJobController.Instance.AddTileJob(coord, 5f, "Road");
+        
     }
 }
