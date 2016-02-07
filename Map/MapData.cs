@@ -87,6 +87,12 @@ public class MapData{
         return heightData[(int)tile.x, (int)tile.y];
     }
 
+    public float GetExactHeight(Vector2 tile)
+    {
+        // FIX ME:
+        return heightData[(int)tile.x, (int)tile.y];
+    }
+
     public float GetSlope(Vector2 corner, int x, int y)
     {
         float min = 100;

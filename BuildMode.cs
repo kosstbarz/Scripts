@@ -2,9 +2,9 @@
 using UnityEngine.UI;
 
 [RequireComponent(typeof(MapGenerator))]
-public class BuildScript : MonoBehaviour {
+public class BuildMode : MonoBehaviour {
 
-    public static BuildScript Instance { get; protected set; }
+    public static BuildMode Instance { get; protected set; }
     public GameObject buildPanel;
     public GameObject[] objects;
     public Material ghostGreen;
@@ -61,9 +61,15 @@ public class BuildScript : MonoBehaviour {
         }
     }
 
+    public void CreateJob(Vector2 coord, string type)
+    {
+        BuildJobController.Instance.AddTileJob(coord, type);
+    }
+    
+    
     public void BuildRoad(Vector2 coord)
     {
-        BuildJobController.Instance.AddTileJob(coord, 5f, "Road");
+        MapController.Instance.ChangeTile(coord, "Road");
         
     }
 }

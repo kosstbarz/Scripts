@@ -19,7 +19,7 @@ public class GhostScript : MonoBehaviour {
         //GameObject gameScript = GameObject.Find("GameScript");
         name = "Ghost";
         renderer = GetComponentInChildren<Renderer>();
-        renderer.material = BuildScript.Instance.ghostGreen;
+        renderer.material = BuildMode.Instance.ghostGreen;
         renderer.receiveShadows = false;
         gameObject.layer = LayerMask.NameToLayer("Ghost");
         renderer.gameObject.layer = LayerMask.NameToLayer("Ghost");
@@ -43,7 +43,7 @@ public class GhostScript : MonoBehaviour {
         {
             positionScript.EnterTile = coord;
             Vector3 coordCenter = new Vector3(coord.x + MapController.TILE_SIZE/2, MapController.Instance.mapData.GetHeight(coord), coord.y + MapController.TILE_SIZE/2);
-            renderer.material = CanBuild() ? BuildScript.Instance.ghostGreen : BuildScript.Instance.ghostRed;
+            renderer.material = CanBuild() ? BuildMode.Instance.ghostGreen : BuildMode.Instance.ghostRed;
             transform.position = coordCenter;
         }
          
@@ -86,7 +86,7 @@ public class GhostScript : MonoBehaviour {
 
     public void PlaceHouse()
     {
-        GameObject newHouse = Instantiate(BuildScript.Instance.objects[number]);
+        GameObject newHouse = Instantiate(BuildMode.Instance.objects[number]);
         newHouse.GetComponent<PositionScript>().SynchronizePosition(positionScript);
         newHouse.transform.position = gameObject.transform.position;
         newHouse.transform.rotation = gameObject.transform.rotation;

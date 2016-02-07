@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HouseBuildJob : BuildJob {
+public class HouseBuildJob {
 
 	
-    public HouseBuildJob (float time) : base(time)
+    public HouseBuildJob (float time)
     {
 
     }

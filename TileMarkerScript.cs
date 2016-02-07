@@ -58,6 +58,7 @@ public class TileMarkerScript : MonoBehaviour {
         if (!MapController.Instance.mapData.tileData[(int)mouseTile.x, (int)mouseTile.y].walkable) return false;
         if (MapController.Instance.mapData.tileData[(int)mouseTile.x, (int)mouseTile.y].name == Types.Road) return false;
         if (MapController.Instance.mapData.GetSlope(mouseTile, 1, 1) > MAX_SLOPE) return false;
+        if (BuildJobController.Instance.IsBusy(mouseTile)) return false;
 
         return true;
     }

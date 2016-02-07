@@ -36,7 +36,8 @@ public class MapController : MonoBehaviour {
         textureInRow = texture.width / textureSize;
         CalculateUV();
         GetComponent<MapGenerator>().GenerateMap();
-        
+        GetComponent<PlayerManager>().AddUnit(new Vector2(25f, 25f));
+
     }
 	
     public void CalculateUV()

@@ -14,6 +14,7 @@ public class MouseController : MonoBehaviour {
 
     bool buildHouseMode = false;
     bool buildTileMode = false;
+    bool deleteJob = false;
 
     private int groundLM;
     private int selectableLM;
@@ -48,27 +49,48 @@ public class MouseController : MonoBehaviour {
             {
                 ghost.PlaceHouse();
                 // On default we use road after building a house
-                BuildScript.Instance.OnTileButtonClick(0);
+                BuildMode.Instance.OnTileButtonClick(0);
             }
             if (Input.GetMouseButtonUp(1))
             {
                 // Go out from build mode
-                BuildScript.Instance.OnBuildButtonClick();
+                BuildMode.Instance.OnBuildButtonClick();
             }
         }
         // All clicks for tiles
         if (buildTileMode)
         {
-            if (Input.GetMouseButton(0) && currTileUnderMouse.x >= 0 && marker.CanBuild())
+            // Here we decide what we want to do, add jobs or remove them.
+            if (Input.GetMouseButtonDown(0) && currTileUnderMouse.x >= 0)
             {
-                BuildScript.Instance.BuildRoad(currTileUnderMouse);
+                TileBuildJob job = BuildJobController.Instance.GetJob(currTileUnderMouse);
+                deleteJob = (job != null && job.type == "Road");
+                
+            }
 
+            if (Input.GetMouseButton(0) && currTileUnderMouse.x >= 0)
+            {
+                if (!deleteJob)
+                { // Add job
+                    if (marker.CanBuild())
+                    {
+                        BuildMode.Instance.CreateJob(currTileUnderMouse, "Road");
+                    }
+                }
+                else // Remove job
+                {
+                    TileBuildJob job = BuildJobController.Instance.GetJob(currTileUnderMouse);
+                    if (job != null && job.type == "Road")
+                    {
+                        BuildJobController.Instance.GetJob(currTileUnderMouse).OnCancell();
+                    }
+                }
             }
             else
             {
                 if (Input.GetMouseButtonUp(1))
                 {
-                    BuildScript.Instance.OnBuildButtonClick();
+                    BuildMode.Instance.OnBuildButtonClick();
 
                 }
             }
