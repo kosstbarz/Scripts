@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(PositionScript))]
+[RequireComponent(typeof(JobInfo))]
 public class GhostScript : MonoBehaviour {
 
     
@@ -12,6 +13,7 @@ public class GhostScript : MonoBehaviour {
     Vector2 currTile;
     Renderer renderer;
     PositionScript positionScript;
+    JobInfo jobInfo;
     Vector2 leftCorner;
 
     // Use this for initialization
@@ -25,6 +27,7 @@ public class GhostScript : MonoBehaviour {
         renderer.gameObject.layer = LayerMask.NameToLayer("Ghost");
         positionScript = GetComponent<PositionScript>();
         leftCorner = positionScript.LeftCorner();
+        jobInfo = GetComponent<JobInfo>();
         MouseController.Instance.RegisterTileChanged(ChangePosition);
         MouseController.Instance.ghost = this;
         MouseController.Instance.TurnOnHouseMode();
@@ -59,48 +62,50 @@ public class GhostScript : MonoBehaviour {
     public bool CanBuild()
     {
         if (currTile.x < 0) return false;
-        int x = (int)currTile.x;
-        int y = (int)currTile.y;
-        
-        leftCorner = positionScript.LeftCorner();
-        int xLength = positionScript.XLength();
-        int yLength = positionScript.YLength();
-        for (int i = (int)leftCorner.x; i < leftCorner.x + xLength; i++)
+
+        List<Vector2> tiles = positionScript.GetTiles();
+        foreach (Vector2 curr in tiles)
         {
-            for (int j = (int)leftCorner.y; j < leftCorner.y + yLength; j++)
+            int x = (int)curr.x;
+            int y = (int)curr.y;
+            if (!MapController.Instance.mapData.tileData[x, y].walkable)
             {
-                if (!MapController.Instance.mapData.tileData[i, j].walkable)
-                {
-                    //Debug.Log("Tile " + i + ", " + j + " is not walkable");
-                    return false;
-                }
-                if (i < BORDER || j < BORDER || i > MapController.Instance.mapData.xSize - BORDER || j > MapController.Instance.mapData.ySize - BORDER)
-                {
-                    //Debug.Log("Too close to border of world");
-                    return false;
-                }
+                //Debug.Log("Tile " + i + ", " + j + " is not walkable");
+                return false;
+            }
+            if (x < BORDER || y < BORDER || x > MapController.Instance.mapData.xSize - BORDER || y > MapController.Instance.mapData.ySize - BORDER)
+            {
+                //Debug.Log("Too close to border of world");
+                return false;
             }
         }
+        
         return MapController.Instance.mapData.GetSlope(positionScript.LeftCorner(), positionScript.XLength(), positionScript.YLength()) < MAX_SLOPE;
+    }
+
+    public void AddJob()
+    {
+        BuildJobController.Instance.AddHouseJob(jobInfo.jobTime, positionScript, number);
+        List<Vector2> tiles = positionScript.GetTiles();
+        foreach (Vector2 curr in tiles)
+        {
+            MapController.Instance.ChangeTile(curr, "Unknown"); //FIXME
+        }
+
     }
 
     public void PlaceHouse()
     {
         GameObject newHouse = Instantiate(BuildMode.Instance.objects[number]);
         newHouse.GetComponent<PositionScript>().SynchronizePosition(positionScript);
-        newHouse.transform.position = gameObject.transform.position;
-        newHouse.transform.rotation = gameObject.transform.rotation;
-        int xLength = positionScript.XLength();
-        int yLength = positionScript.YLength();
-
-        for (int i = (int)leftCorner.x; i < leftCorner.x + xLength; i++)
+        newHouse.transform.position = transform.position;
+        newHouse.transform.rotation = transform.rotation;
+        List<Vector2> tiles = positionScript.GetTiles();
+        foreach (Vector2 curr in tiles)
         {
-            for (int j = (int)leftCorner.y; j < leftCorner.y + yLength; j++)
-            {
-                //Debug.Log("coord " + i + ", " + j);
-                MapController.Instance.ChangeTile(new Vector2(i, j), "Unknown");
-            }
+            MapController.Instance.ChangeTile(curr, "Unknown"); //FIXME
         }
+       
     }
     void OnDestroy()
     {
@@ -108,4 +113,6 @@ public class GhostScript : MonoBehaviour {
         MouseController.Instance.ghost = null;
         MouseController.Instance.TurnOnTileMode();
     }
+
+    
 }

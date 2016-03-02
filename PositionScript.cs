@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PositionScript : MonoBehaviour {
 
@@ -8,8 +8,7 @@ public class PositionScript : MonoBehaviour {
     public int rightLength; // number of tiles to the right of entrence
     Vector2 enterTile;
     Vector2 upTile;
-    Vector2 toUp;
-    Vector2 toLeft;
+
 
     public Vector2 EnterTile
     {
@@ -18,18 +17,31 @@ public class PositionScript : MonoBehaviour {
         }
 
         set {
+            Vector2 diff = value - enterTile;
             enterTile = value;
-            upTile = enterTile + toUp;
+            upTile = upTile + diff;
         }
     }
 
+    public Vector2 ToUp
+    {
+        get {
+            return upTile - enterTile;   
+        }
+    }
+
+    public Vector2 ToLeft // Normalized vector
+    {
+        get
+        {
+            return new Vector2(-ToUp.y, ToUp.x).normalized;
+        }
+    }
 
     // Use this for initialization
     void Start () {
         enterTile = new Vector2(0f, 0f);
         upTile = new Vector2(0f, upLength);
-        toUp = upTile - enterTile;
-        toLeft = new Vector2(-toUp.y, toUp.x).normalized;
     }
 	
 	// Update is called once per frame
@@ -38,28 +50,25 @@ public class PositionScript : MonoBehaviour {
         {
             Debug.Log("Enter tile " + enterTile.x + ", " + enterTile.y);
             Debug.Log("Up tile " + upTile.x + ", " + upTile.y);
-            Debug.Log("Up vector " + toUp.x + ", " + toUp.y);
-            Debug.Log("Left vector " + toLeft.x + ", " + toLeft.y);
+            Debug.Log("Up vector " + ToUp.x + ", " + ToUp.y);
+            Debug.Log("Left vector " + ToLeft.x + ", " + ToLeft.y);
             Debug.Log("Left Corner " + LeftCorner().x + ", " + LeftCorner().y);
         }
 	}
 
     public void Rotate()
     {
-        Debug.Log("Enter tile " + enterTile);
-        upTile.Set(enterTile.x -toUp.y, enterTile.y + toUp.x); // Rotation of upTile around enterTile to 90 degrees
-        toUp = upTile - enterTile;
-        toLeft.Set(-toUp.y, toUp.x);
-        toLeft = toLeft.normalized;
-        Debug.Log("Enter tile " + enterTile);
+        //Debug.Log("Enter tile " + enterTile);
+        upTile.Set(enterTile.x -ToUp.y, enterTile.y + ToUp.x); // Rotation of upTile around enterTile to 90 degrees
+        //Debug.Log("Enter tile " + enterTile);
     }
 
     public Vector2 LeftCorner()
     {
         Vector2 leftCorner = new Vector2();
 
-        Vector2 lb = enterTile + toLeft * leftLength;
-        Vector2 ru = upTile - toLeft * rightLength;
+        Vector2 lb = enterTile + ToLeft * leftLength;
+        Vector2 ru = upTile - ToLeft * rightLength;
         leftCorner.Set(Mathf.Min(lb.x, ru.x), Mathf.Min(lb.y, ru.y));
 
         return leftCorner;
@@ -77,14 +86,26 @@ public class PositionScript : MonoBehaviour {
 
     public bool Horizontal()
     {
-        return toUp.x == 0f;
+        return ToUp.x == 0f;
     }
 
     public void SynchronizePosition(PositionScript another)
     {
         enterTile = another.enterTile;
         upTile = another.upTile;
-        toUp = another.toUp;
-        toLeft = another.toLeft;
+    }
+    public List<Vector2> GetTiles()
+    {
+        List<Vector2> result = new List<Vector2>();
+        Vector2 leftCorner = LeftCorner();
+        for (int i = (int)leftCorner.x; i < leftCorner.x + XLength(); i++)
+        {
+            for (int j = (int)leftCorner.y; j < leftCorner.y + YLength(); j++)
+            {
+                result.Add(new Vector2(i, j));
+                
+            }
+        }
+        return result;
     }
 }

@@ -61,12 +61,7 @@ public class BuildMode : MonoBehaviour {
         }
     }
 
-    public void CreateJob(Vector2 coord, string type)
-    {
-        BuildJobController.Instance.AddTileJob(coord, type);
-    }
-    
-    
+     
     public void BuildRoad(Vector2 coord)
     {
         MapController.Instance.ChangeTile(coord, "Road");

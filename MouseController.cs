@@ -47,7 +47,7 @@ public class MouseController : MonoBehaviour {
                 ghost.Rotate();
             if (Input.GetMouseButtonUp(0) && ghost.CanBuild())
             {
-                ghost.PlaceHouse();
+                ghost.AddJob();
                 // On default we use road after building a house
                 BuildMode.Instance.OnTileButtonClick(0);
             }
@@ -63,8 +63,11 @@ public class MouseController : MonoBehaviour {
             // Here we decide what we want to do, add jobs or remove them.
             if (Input.GetMouseButtonDown(0) && currTileUnderMouse.x >= 0)
             {
-                TileBuildJob job = BuildJobController.Instance.GetJob(currTileUnderMouse);
-                deleteJob = (job != null && job.type == "Road");
+                BuildJob job = BuildJobController.Instance.GetJob(currTileUnderMouse);
+                deleteJob = job != null && 
+                            job.GetType().Equals(typeof(TileBuildJob)) && 
+                            job.type == "Road";
+                
                 
             }
 
@@ -74,13 +77,15 @@ public class MouseController : MonoBehaviour {
                 { // Add job
                     if (marker.CanBuild())
                     {
-                        BuildMode.Instance.CreateJob(currTileUnderMouse, "Road");
+                        BuildJobController.Instance.AddTileJob(currTileUnderMouse, "Road");
                     }
                 }
                 else // Remove job
                 {
-                    TileBuildJob job = BuildJobController.Instance.GetJob(currTileUnderMouse);
-                    if (job != null && job.type == "Road")
+                    BuildJob job = BuildJobController.Instance.GetJob(currTileUnderMouse);
+                    if (job != null &&
+                            job.GetType().Equals(typeof(TileBuildJob)) &&
+                            job.type == "Road")
                     {
                         BuildJobController.Instance.GetJob(currTileUnderMouse).OnCancell();
                     }

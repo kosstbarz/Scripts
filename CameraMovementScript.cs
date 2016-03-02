@@ -28,7 +28,7 @@ public class CameraMovementScript : MonoBehaviour {
         if (Input.mousePosition.x >= Camera.main.pixelWidth - 10 && Input.mousePosition.x <= Camera.main.pixelWidth - 1)
             MoveCamera(cameraSpeed, 0);
 
-        if (Input.mousePosition.y == 0f)
+        if (Input.mousePosition.y < 5f)
             MoveCamera(0f, -cameraSpeed);
 
         if (Input.mousePosition.y >= Camera.main.pixelHeight - 20 &&  Input.mousePosition.y <= Camera.main.pixelHeight - 1)

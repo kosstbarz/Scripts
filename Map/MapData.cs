@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class MapData{
     
@@ -21,7 +21,7 @@ public class MapData{
     // TODO Make reading of types from file
     void FillTileTypes()
     {
-        tileTypes = new TileType[6];
+        tileTypes = new TileType[7];
         TileType grass = new TileType(Types.Grassland, true, 1);
         
         TileType road = new TileType(Types.Road, true, 2);
@@ -34,12 +34,15 @@ public class MapData{
 
         TileType unknown = new TileType(Types.Unknown, true, 1);
 
+        TileType house = new TileType(Types.House, false, 1);
+
         tileTypes[0] = grass;
         tileTypes[1] = road;
         tileTypes[2] = mountain;
         tileTypes[3] = water;
         tileTypes[4] = swamp;
         tileTypes[5] = unknown;
+        tileTypes[6] = house;
     }
     // Returns type of tile with specified coordinates
     public TileType GetType(Vector2 coord)
@@ -110,4 +113,25 @@ public class MapData{
         }
         return max - min;
     }
+
+    bool IsTileAt(float x, float y)
+    {
+        return (x >= 0 && x < xSize && y >= 0 && y < ySize);
+    }    
+
+    public List<Vector2> GetNeighbors(Vector2 tile)
+    {
+        List<Vector2> result = new List<Vector2>();
+        float x = tile.x;
+        float y = tile.y;
+        if (IsTileAt(x, y + 1)) result.Add(new Vector2(x, y + 1));
+        if (IsTileAt(x+1, y)) result.Add(new Vector2(x+1, y));
+        if (IsTileAt(x, y - 1)) result.Add(new Vector2(x, y - 1));
+        if (IsTileAt(x-1, y)) result.Add(new Vector2(x-1, y));
+        if (IsTileAt(x+1, y + 1)) result.Add(new Vector2(x+1, y + 1));
+        if (IsTileAt(x+1, y - 1)) result.Add(new Vector2(x+1, y - 1));
+        if (IsTileAt(x-1, y - 1)) result.Add(new Vector2(x-1, y - 1));
+        if (IsTileAt(x-1, y + 1)) result.Add(new Vector2(x-1, y + 1));
+        return result;
+    } 
 }

@@ -23,6 +23,7 @@ public enum Types
     Mountain,
     Water,
     Swamp,
-    Unknown
+    Unknown,
+    House
 }
 

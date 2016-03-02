@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Node {
 
-    Vector2 place;
-    Edge[] edges;
+    public Vector2 place;
+    public Dictionary<Node, float> edges;
+
+    public Node(Vector2 place)
+    {
+        this.place = place;
+        edges = new Dictionary<Node, float>();
+    }
 }
