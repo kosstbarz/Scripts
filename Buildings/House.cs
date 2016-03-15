@@ -1,21 +1,27 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using System;
+using System.Collections.Generic;
+
 
 public abstract class House : MonoBehaviour, ISelectable {
 
     public bool isBuild;
-    public int health;
-    public abstract string HouseType { get; }
-
-
-    public string GetName()
+    public Action someChanges;
+    protected bool selected;
+    public void Select()
     {
-        return HouseType;
+        selected = true;
     }
-    public string GetHealth()
+    public bool IsSelected()
     {
-        return health.ToString();
+        return selected;
+    } 
+    public void DeSelect()
+    {
+        selected = false;
+        someChanges = null;
     }
-
+    public abstract void TimeLap(float time);
+    public abstract void OnBuild();
+    public abstract Dictionary<Resource, int> GetResources();
 }

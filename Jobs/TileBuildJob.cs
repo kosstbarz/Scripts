@@ -24,7 +24,7 @@ public class TileBuildJob : BuildJob {
     public override void OnComplete()
     {
         MapController.Instance.ChangeTile(tile, type);
-        BuildJobController.Instance.cbJobEnded(this);
+        BuildJobController.Instance.cbBuildJobEnded(this);
 
     }
 }

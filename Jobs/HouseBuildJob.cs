@@ -22,6 +22,6 @@ public class HouseBuildJob : BuildJob
         {
             MapController.Instance.ChangeTileWithoutGraph(curr, "House"); 
         }
-        BuildJobController.Instance.cbJobEnded(this);
+        BuildJobController.Instance.cbBuildJobEnded(this);
     }
 }

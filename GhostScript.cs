@@ -33,12 +33,6 @@ public class GhostScript : MonoBehaviour {
         MouseController.Instance.TurnOnHouseMode();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void ChangePosition(Vector2 coord)
     {
         currTile = coord;
@@ -94,19 +88,6 @@ public class GhostScript : MonoBehaviour {
 
     }
 
-    public void PlaceHouse()
-    {
-        GameObject newHouse = Instantiate(BuildMode.Instance.objects[number]);
-        newHouse.GetComponent<PositionScript>().SynchronizePosition(positionScript);
-        newHouse.transform.position = transform.position;
-        newHouse.transform.rotation = transform.rotation;
-        List<Vector2> tiles = positionScript.GetTiles();
-        foreach (Vector2 curr in tiles)
-        {
-            MapController.Instance.ChangeTile(curr, "Unknown"); //FIXME
-        }
-       
-    }
     void OnDestroy()
     {
         MouseController.Instance.UnregisterTileChanged(ChangePosition);

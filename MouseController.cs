@@ -108,8 +108,9 @@ public class MouseController : MonoBehaviour {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, selectableLM) &&
                     !EventSystem.current.IsPointerOverGameObject())
                 {
-                    //Debug.Log("RayCast work");
-                    Selecting.Instance.ChangeSelection(hit.transform.GetComponent<ISelectable>());
+                    //Debug.Log("hit: "+ hit.transform.name);
+                    SelectedPanel.Instance.ChangeSelection(hit.transform.GetComponent<ISelectable>());
+                    //Selecting.Instance.ChangeSelection(hit.transform.GetComponent<ISelectable>());
                     
                 }
             }

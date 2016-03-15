@@ -2,6 +2,9 @@
 
 public interface ISelectable {
 
-    string GetName();
-    string GetHealth();
+    bool IsSelected();
+    void Select();
+    void DeSelect();
+
+    
 }

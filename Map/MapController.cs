@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class MapController : MonoBehaviour
 {
 
     public static MapController Instance { get; protected set; }
-
+    static bool loadMap = false;
     public const float TILE_SIZE = 1;
     public Texture2D texture;
     public int textureSize;
@@ -35,12 +36,13 @@ public class MapController : MonoBehaviour
         {
             Debug.LogError("Only one instance of MapController can be created");
         }
-        mapData = new MapData(50, 50);
-        numberOfTileTypes = mapData.tileTypes.Length;
-        textureInRow = texture.width / textureSize;
-        CalculateUV();
-        GetComponent<MapGenerator>().GenerateMap();
-        GetComponent<PlayerManager>().AddUnit(new Vector2(25.5f, 25.5f));
+        if (loadMap){
+            loadMap = false;
+            CreateMapFromSave();
+        }
+        else {
+            CreateNewMap();
+        }
 
     }
 
@@ -57,12 +59,6 @@ public class MapController : MonoBehaviour
 
         }
         Debug.Log("Calculate UV");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void ChangeTile(Vector2 tileCoord, string name)
@@ -86,5 +82,39 @@ public class MapController : MonoBehaviour
         TileType type = mapData.GetType(name);
         mapData.SetTile(tileCoord, type);
         PathfindingManager.Instance.UpdateGraph(tileCoord);
+    }
+
+    void CreateNewMap()
+    {
+        mapData = new MapData(50, 50);
+        numberOfTileTypes = mapData.tileTypes.Length;
+        textureInRow = texture.width / textureSize;
+        CalculateUV();
+        GetComponent<MapGenerator>().GenerateMap();
+        GetComponent<PlayerManager>().AddBuilder(new Vector2(25.5f, 25.5f));
+    }
+
+    void CreateMapFromSave()
+    {
+        mapData = new MapData(50, 50);
+        numberOfTileTypes = mapData.tileTypes.Length;
+        textureInRow = texture.width / textureSize;
+        CalculateUV();
+        GetComponent<MapGenerator>().GenerateMap();
+        GetComponent<PlayerManager>().AddBuilder(new Vector2(25.5f, 25.5f));
+    }
+    public void NewMap()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void SaveMap()
+    {
+
+    }
+
+    public void LoadMap()
+    {
+
     }
 }

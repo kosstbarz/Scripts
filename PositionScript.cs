@@ -6,7 +6,7 @@ public class PositionScript : MonoBehaviour {
     public int upLength; // number of tiles up of entrence
     public int leftLength; // number of tiles to the left of entrence
     public int rightLength; // number of tiles to the right of entrence
-    Vector2 enterTile;
+    public Vector2 enterTile;
     Vector2 upTile;
 
 
@@ -39,9 +39,12 @@ public class PositionScript : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
-        enterTile = new Vector2(0f, 0f);
-        upTile = new Vector2(0f, upLength);
+    void Awake () {
+        
+            enterTile = new Vector2(0f, 0f);
+            upTile = new Vector2(0f, upLength);
+            Debug.Log("Awake of PositionScript");
+        
     }
 	
 	// Update is called once per frame
@@ -91,8 +94,10 @@ public class PositionScript : MonoBehaviour {
 
     public void SynchronizePosition(PositionScript another)
     {
+        
         enterTile = another.enterTile;
         upTile = another.upTile;
+        Debug.Log("SynchronizePosition: Enter tile " + enterTile);
     }
     public List<Vector2> GetTiles()
     {
@@ -107,5 +112,12 @@ public class PositionScript : MonoBehaviour {
             }
         }
         return result;
+    }
+    public Vector2 GetTileBeforeEnter()
+    {
+        //Debug.Log("Enter tile" + enterTile);
+        //Debug.Log("ToUp.normalized " + ToUp.normalized);
+        //Debug.Log("GetTileBeforeEnter " + (enterTile - ToUp.normalized));
+        return enterTile - ToUp.normalized;
     }
 }

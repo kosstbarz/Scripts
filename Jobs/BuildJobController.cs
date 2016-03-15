@@ -14,7 +14,8 @@ public class BuildJobController : MonoBehaviour {
     
     Dictionary<BuildJob, GameObject> jobGO;
     Dictionary<Vector2, BuildJob> busyTiles;
-    public Action<BuildJob> cbJobEnded; 
+    public Action<BuildJob> cbBuildJobEnded;
+    PlayerManager player;
 
     // Use this for initialization
     void Start () {
@@ -27,9 +28,10 @@ public class BuildJobController : MonoBehaviour {
         houseBuildQueue = new List<HouseBuildJob>();
         tileBuildQueue = new List<TileBuildJob>();
         jobGO = new Dictionary<BuildJob, GameObject>();
-        cbJobEnded += jobEnded;
+        cbBuildJobEnded += buildJobEnded;
         busyTiles = new Dictionary<Vector2, BuildJob>();
-	}
+        player = GameObject.Find("GameScript").GetComponent<PlayerManager>();
+    }
 	
 	public void AddHouseJob(float time, PositionScript position, int number) {
         HouseBuildJob job = new HouseBuildJob(time, position, number);
@@ -53,7 +55,7 @@ public class BuildJobController : MonoBehaviour {
         busyTiles.Add(tile, job);
     }
 
-    public BuildJob takeJob()
+    public BuildJob takeBuildJob()
     {
         if (tileBuildQueue.Count != 0)
         {
@@ -70,17 +72,11 @@ public class BuildJobController : MonoBehaviour {
         return null;
     }
 
-    // FIX ME: 
-    void jobTaken(TileBuildJob job, GameObject worker)
-    {
-
-    }
-
-    void jobEnded (BuildJob job)
+    void buildJobEnded (BuildJob job)
     {
         if ( jobGO.ContainsKey(job)) Destroy(jobGO[job]);
         Debug.Log("Job ended!");
-
+        
         if (job.GetType().Equals(typeof(TileBuildJob))){
             busyTiles.Remove(job.tile);
             TileBuildJob tileJob = (TileBuildJob) job;
@@ -112,12 +108,28 @@ public class BuildJobController : MonoBehaviour {
 
     public void InstantiateHouse(int number, PositionScript position)
     {
-        GameObject newHouse = Instantiate(BuildMode.Instance.objects[number]);
+        GameObject newHouse = Instantiate(BuildMode.Instance.objects[number]) as GameObject;
+        newHouse.gameObject.name = BuildMode.Instance.objects[number].name;
         newHouse.GetComponent<PositionScript>().SynchronizePosition(position);
+        
         Vector2 coord = position.EnterTile;
         Vector3 coordCenter = new Vector3(coord.x + MapController.TILE_SIZE / 2, MapController.Instance.mapData.GetHeight(coord), coord.y + MapController.TILE_SIZE / 2);
         newHouse.transform.position = coordCenter;
         Vector3 forward = new Vector3(position.ToUp.x, 0f, position.ToUp.y);
         newHouse.transform.rotation = Quaternion.LookRotation(forward);
+        if (number == BuildMode.Instance.storeNumber)
+        {
+            player.AddStore(newHouse.GetComponent<ResourceController>());
+            Debug.Log("InstantiateHouse: Added store to storeList. Is it null? " + (newHouse.GetComponent<ResourceController>() == null).ToString());
+        } else
+        {
+            
+            player.AddHouse(newHouse.GetComponent<House>());
+            //Debug.Log("InstantiateHouse: School " + (sc == null).ToString());
+            //Debug.Log("InstantiateHouse: resAg " + (sc.resourceAgent == null).ToString());
+        }
+        
+        newHouse.GetComponent<House>().OnBuild();
+        Debug.Log("InstantiateHouse " + newHouse.GetComponent<PositionScript>().enterTile);
     }
 }

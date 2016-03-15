@@ -11,10 +11,11 @@ public abstract class BuildJob {
     
     public void OnCancell()
     {
-        BuildJobController.Instance.cbJobEnded(this);
+        BuildJobController.Instance.cbBuildJobEnded(this);
     }
 
-    public void DoWork(float workTime)
+    // Returns true, if work is complited.
+    public bool DoWork(float workTime)
     {
         //Debug.Log("Work start with time " + timeLeft);
         timeLeft -= workTime;
@@ -22,6 +23,8 @@ public abstract class BuildJob {
         if (timeLeft <= 0f)
         {
             OnComplete();
+            return true;
         }
+        return false;
     }
 }

@@ -9,7 +9,7 @@ public class BuildMode : MonoBehaviour {
     public GameObject[] objects;
     public Material ghostGreen;
     public Material ghostRed;
-
+    public int storeNumber;
     GameObject ghost;
     TileMarkerScript tileMarkerScript;
 
@@ -25,6 +25,16 @@ public class BuildMode : MonoBehaviour {
         }
         buildPanelActive = buildPanel.activeSelf;
         tileMarkerScript = GameObject.Find("TileMarker").GetComponent<TileMarkerScript>();
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i].name == "Store")
+            {
+                storeNumber = i;
+                Debug.Log("storeNumber " + storeNumber);
+                break;
+            }
+        }
+       
     }
 
     public void OnBuildButtonClick()
